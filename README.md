@@ -14,8 +14,7 @@ In future releases, this project will include other additional materials and mor
 
 # Wireframe
 
-![Image of Silica]
-(https://i.imgur.com/mPsutv4.png)
+![Image of Silica](https://i.imgur.com/mPsutv4.png)
 
 # Architecture and Technologies
 
