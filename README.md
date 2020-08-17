@@ -28,6 +28,10 @@ Silica will utilize the following technologies:
 
 4. twgl for WebGL QOL improvements
 
+5. CSS for styling
+
+6. Webpack for managing node modules
+
 # Implementation Timeline
 
 ## Day 1
