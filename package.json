@@ -46,6 +46,10 @@
     "webpack-merge": "^5.1.1"
   },
   "dependencies": {
-    "nodemon": "^2.0.4"
+    "bindings": "^1.5.0",
+    "nan": "^2.14.1",
+    "node-gyp": "^7.1.0",
+    "nodemon": "^2.0.4",
+    "twgl.js": "^4.15.2"
   }
 }
