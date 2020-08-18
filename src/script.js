@@ -1,3 +1,5 @@
+
+
 var canvas, ctx, flag = false,
     prevX = 0,
     currX = 0,
@@ -5,7 +7,7 @@ var canvas, ctx, flag = false,
     currY = 0,
     dot_flag = false;
 
-var x = "silica",
+var x = "black",
     y = 2;
 
 function initialize() {
@@ -28,24 +30,12 @@ function initialize() {
     }, false);
 }
 
-function color(obj) {
-    switch (obj.id) {
-        case "silica":
-            x = "silica";
-            break;
-        case "wall":
-            x = "wall";
-            break;
-        case "water":
-            x = "water";
-            break;
-        case "void":
-            x = "void";
-            break;
-    }
-    if (x == "void") y = 14;
+function material(obj) {
+    x = obj;
+    if (x == "white") y = 14;
     else y = 2;
 }
+
 
 function draw() {
     ctx.beginPath();
@@ -60,11 +50,10 @@ function draw() {
 function erase() {
     // var m = confirm("Want to clear");
     // if (m) {
-        ctx.clearRect(0, 0, width, height);
-        document.getElementById("myCanvas").style.display = "none";
+    ctx.clearRect(0, 0, width, height);
+    document.getElementById("myCanvas").style.display = "none";
     // }
 }
-
 function findxy(res, e) {
     if (res == 'down') {
         prevX = currX;
@@ -96,14 +85,9 @@ function findxy(res, e) {
     }
 }
 
-console.log("hello");
+document.getElementById("water").addEventListener("click", () => material("blue"))
+document.getElementById("wall").addEventListener("click", () => material("black"))
+document.getElementById("silica").addEventListener("click", () => material("yellow"))
+document.getElementById("void").addEventListener("click", () => material("white"))
+
 initialize();
-
-{/* <body onload="initialize()"> */}
- 
-
-        // <div style="position:absolute;top:12%;left:43%;">Choose Color</div>
-        // <div style="position:absolute;top:15%;left:45%;width:10px;height:10px;background:green;" id="green" onclick="color(this)"></div>
-        // <div style="position:absolute;top:20%;left:43%;">Eraser</div>
-        // <input type="button" value="save" id="btn" size="30" onclick="save()" style="position:absolute;top:55%;left:10%;">
-        // <input type="button" value="clear" id="clr" size="23" onclick="erase()" style="position:absolute;top:55%;left:15%;">
