@@ -1,62 +1,77 @@
 
-function initialize() {
-    canvas = document.getElementById('myCanvas');
-    gl = twgl.getWebGLContext(canvas, {
-        alpha: false,
-        antialias: false,
-        depth: false,
-        stencil: false,
-    });
-    twgl.setDefaults({
-        textureColor: [0, 0, 0, 1],
-        attribPrefix: "a_",
-    });
-    // create buffer  
-    // load vertexData into buffer
+canvas = document.getElementById('myCanvas');
+gl = canvas.getContext('webgl');
 
-    // create vertex shader  
-    // create fragment shader 
-    // create program 
-    // attach shaders to program
-    // enable vertex attributes 
+// create buffer  
+// load vertexData into buffer
 
-    // draw
+// create vertex shader  
+// create fragment shader 
+// create program 
+// attach shaders to program
+// enable vertex attributes 
+
+// draw
+const vertexData = [
+    0, 1, 0,
+    1, -1, 0,
+    -1, -1, 0,
+];
+
+const colorData = [
+    1, 0, 0, // V1.color
+    0, 1, 0, // V2.color
+    0, 0, 1, // V3.color
+];
+
+const positionBuffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexData), gl.STATIC_DRAW);
+
+const colorBuffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colorData), gl.STATIC_DRAW);
+
+
+const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+gl.shaderSource(vertexShader, `
+precision mediump float;
+attribute vec3 position;
+attribute vec3 color;
+varying vec3 vColor;
+void main() {
+    vColor = color;
+    gl_Position = vec4(position, 1);
 }
-    const vertexData = [
-        0, 1, 0,
-        1, -1, 0,
-        -1, -1, 0,
-    ];
+`); //this is a string because it is run on openGL shading language (runs on GPU, gl will compile string for us)
+gl.compileShader(vertexShader);
 
-    const buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexData), gl.DYNAMIC_DRAW);
+const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER); //gl_FragColor = vec4(rgba)
+gl.shaderSource(fragmentShader, `
+precision mediump float;
+varying vec3 vColor;
 
-    const vertexShader = gl.createShader(gl.VERTEX_SHADER);
-    gl.shaderSource(vertexShader, `
-    attribute vec3 position;
-    void main() {
-        gl_Position = vec4(position, 1);
-    }
-    `);
-    gl.compileShader(vertexShader);
+void main() {
+    gl_FragColor = vec4(vColor, 1);
+}
+`);
+gl.compileShader(fragmentShader);
 
-    const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fragmentShader, `
-    void main() {
-        gl_FragColor = vec4(1, 0, 0, 1);
-    }
-    `);
-    gl.compileShader(fragmentShader);
+const program = gl.createProgram();
+gl.attachShader(program, vertexShader);
+gl.attachShader(program, fragmentShader);
+gl.linkProgram(program);
 
-    const program = gl.createProgram();
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
+const positionLocation = gl.getAttribLocation(program, `position`);
+gl.enableVertexAttribArray(positionLocation);
+gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
 
-    const positionLocation = gl.getAttribLocation(program, `position`);
-    gl.enableVertexAttribArray(positionLocation);
-    gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
+const colorLocation = gl.getAttribLocation(program, `color`);
+gl.enableVertexAttribArray(colorLocation);
+gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+gl.vertexAttribPointer(colorLocation, 3, gl.FLOAT, false, 0, 0);
 
-    gl.useProgram(program);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+gl.useProgram(program);
+gl.drawArrays(gl.TRIANGLES, 0, 3);
