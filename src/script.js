@@ -11,7 +11,6 @@ function initialize() {
         textureColor: [0, 0, 0, 1],
         attribPrefix: "a_",
     });
-
     // create buffer  
     // load vertexData into buffer
 
