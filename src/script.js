@@ -1,15 +1,4 @@
 
-
-// var canvas, ctx, flag = false,
-//     prevX = 0,
-//     currX = 0,
-//     prevY = 0,
-//     currY = 0,
-//     dot_flag = false;
-
-// var x = "black",
-//     y = 2;
-
 function initialize() {
     canvas = document.getElementById('myCanvas');
     gl = twgl.getWebGLContext(canvas, {
@@ -17,82 +6,58 @@ function initialize() {
         antialias: false,
         depth: false,
         stencil: false,
-//     });
-//     width = canvas.width;
-//     height = canvas.height;
+    });
+    twgl.setDefaults({
+        textureColor: [0, 0, 0, 1],
+        attribPrefix: "a_",
+    });
 
-//     canvas.addEventListener("mousemove", function (e) {
-//         findxy('move', e)
-//     }, false);
-//     canvas.addEventListener("mousedown", function (e) {
-//         findxy('down', e)
-//     }, false);
-//     canvas.addEventListener("mouseup", function (e) {
-//         findxy('up', e)
-//     }, false);
-//     canvas.addEventListener("mouseout", function (e) {
-//         findxy('out', e)
-//     }, false);
-// }
+    // create buffer  
+    // load vertexData into buffer
 
-// function material(obj) {
-//     x = obj;
-//     if (x == "white") y = 14;
-//     else y = 2;
-// }
+    // create vertex shader  
+    // create fragment shader 
+    // create program 
+    // attach shaders to program
+    // enable vertex attributes 
 
+    // draw
+}
+    const vertexData = [
+        0, 1, 0,
+        1, -1, 0,
+        -1, -1, 0,
+    ];
 
-// function draw() {
-//     ctx.beginPath();
-//     ctx.moveTo(prevX, prevY);
-//     ctx.lineTo(currX, currY);
-//     ctx.strokeStyle = x;
-//     ctx.lineWidth = y;
-//     ctx.stroke();
-//     ctx.closePath();
-// }
+    const buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexData), gl.DYNAMIC_DRAW);
 
-// function erase() {
-//     // var m = confirm("Want to clear");
-//     // if (m) {
-//     ctx.clearRect(0, 0, width, height);
-//     document.getElementById("myCanvas").style.display = "none";
-//     // }
-// }
-// function findxy(res, e) {
-//     if (res == 'down') {
-//         prevX = currX;
-//         prevY = currY;
-//         currX = e.clientX - canvas.offsetLeft;
-//         currY = e.clientY - canvas.offsetTop;
+    const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(vertexShader, `
+    attribute vec3 position;
+    void main() {
+        gl_Position = vec4(position, 1);
+    }
+    `);
+    gl.compileShader(vertexShader);
 
-//         flag = true;
-//         dot_flag = true;
-//         if (dot_flag) {
-//             ctx.beginPath();
-//             ctx.fillStyle = x;
-//             ctx.fillRect(currX, currY, 2, 2);
-//             ctx.closePath();
-//             dot_flag = false;
-//         }
-//     }
-//     if (res == 'up' || res == "out") {
-//         flag = false;
-//     }
-//     if (res == 'move') {
-//         if (flag) {
-//             prevX = currX;
-//             prevY = currY;
-//             currX = e.clientX - canvas.offsetLeft;
-//             currY = e.clientY - canvas.offsetTop;
-//             draw();
-//         }
-//     }
-// }
+    const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fragmentShader, `
+    void main() {
+        gl_FragColor = vec4(1, 0, 0, 1);
+    }
+    `);
+    gl.compileShader(fragmentShader);
 
-// document.getElementById("water").addEventListener("click", () => material("blue"))
-// document.getElementById("wall").addEventListener("click", () => material("black"))
-// document.getElementById("silica").addEventListener("click", () => material("yellow"))
-// document.getElementById("void").addEventListener("click", () => material("white"))
+    const program = gl.createProgram();
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
 
-// initialize();
+    const positionLocation = gl.getAttribLocation(program, `position`);
+    gl.enableVertexAttribArray(positionLocation);
+    gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
+
+    gl.useProgram(program);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
