@@ -3,46 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Silica</title>
+    <title>AW Paint</title>
     <!-- <script src="./src/styles/"></script> -->
 </head>
 <body>
-    <h1 style="text-align: center;">Silica</h1>
-    <div>
-        <canvas id="myCanvas" class="canvas" width="600" height="400" style="padding-left: 0;
-            padding-right: 0;
-            margin-left: auto;
-            margin-right: auto;
-            margin-bottom: 30px;
-            display: block;
-            width: 600px; 
-            height: 400px;
-            top:10%;
-            left:10%;
-            border:4px 
-            solid;">
-        </canvas>
+    <h1 style="text-align: center;">Paint!</h1>
+    <div style="display: flex; justify-content: center;">
+        <canvas id="myCanvas" style="cursor: crosshair; border: 3px solid black; margin-bottom: 5px"></canvas>
+        <div style="margin-left: 10px; display: flex; flex-direction: column;";>
+            <button style="margin: 5px 0;" id="round">
+                Round
+            </button>
+            <button style="" id="square">
+                Square
+            </button>
+        </div>
     </div>
     <div style="text-align: center;">
-        <button style="width: 100px; height: 20px;" id="silica">
-            Silica
+        <button style="width: 20px; height: 20px; border: 2px solid black; background-color: red;" id="red">
         </button>
-        <button style="width: 100px; height: 20px;" id="wall">
-            Wall
+        <button style="width: 20px; height: 20px; border: 2px solid black; background-color: orange;" id="orange">
         </button>
-        <button style="width: 100px; height: 20px;" id="water">
-            Water
+        <button style="width: 20px; height: 20px; border: 2px solid black; background-color: yellow;" id="silica">
         </button>
-        <button style="width: 100px; height: 20px;" id="void">
-            Void
+        <button style="width: 20px; height: 20px; border: 2px solid black; background-color: green;" id="green">
         </button>
+        <button style="width: 20px; height: 20px; border: 2px solid black; background-color: blue;" id="water">
+        </button>
+        <button style="width: 20px; height: 20px; border: 2px solid black; background-color: purple;" id="purple">
+        </button>
+        <button style="width: 20px; height: 20px; border: 2px solid black; background-color: Black;" id="wall">
+        </button>
+        <button style="width: 20px; height: 20px; border: 2px solid black; background-color: white;" id="void">
+        </button>
+        <button id="garbage" style="border: none; background-color: white; height: 20px;">DEL
+        </button>
+        <a id="download" download="image.png"><button id="download" download="image.png" type="button" onClick="download()">Download</button></a>
     </div>
 <script src="dist/main.js"></script>
 </body>
-<!-- <script>
-    var canvas = document.getElementById("myCanvas");
-    var ctx = canvas.getContext("2d");
-    ctx.fillStyle = "#FF0000";
-    ctx.fillRect(0, 0, 150, 75);
-</script> -->
 </html>

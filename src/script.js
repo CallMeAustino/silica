@@ -13,6 +13,10 @@ var x = "black",
 function initialize() {
     canvas = document.getElementById('myCanvas');
     ctx = canvas.getContext("2d");
+    canvas.width = 500;
+    canvas.height = 500;
+    // canvas.width = window.innerWidth;
+    // canvas.height = window.innerHeight;
     width = canvas.width;
     height = canvas.height;
 
@@ -30,7 +34,7 @@ function initialize() {
     }, false);
 }
 
-function material(obj) {
+function color(obj) {
     x = obj;
     if (x == "white") y = 14;
     else y = 2;
@@ -48,11 +52,11 @@ function draw() {
 }
 
 function erase() {
-    // var m = confirm("Want to clear");
-    // if (m) {
+    var m = confirm("Erase all your hard work?");
+    if (m) {
     ctx.clearRect(0, 0, width, height);
-    document.getElementById("myCanvas").style.display = "none";
-    // }
+    }
+
 }
 function findxy(res, e) {
     if (res == 'down') {
@@ -85,9 +89,42 @@ function findxy(res, e) {
     }
 }
 
-document.getElementById("water").addEventListener("click", () => material("blue"))
-document.getElementById("wall").addEventListener("click", () => material("black"))
-document.getElementById("silica").addEventListener("click", () => material("yellow"))
-document.getElementById("void").addEventListener("click", () => material("white"))
+function download() {
+    var download = document.getElementById("download");
+    var image = document.getElementById("myCanvas").toDataURL("image/png")
+        .replace("image/png", "image/octet-stream");
+    download.setAttribute("href", image);
+}
+
+function setRound() {
+    ctx.lineWidth = 5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = '#2b39c0';
+}
+
+function setSquare() {
+    ctx.lineWidth = 5;
+    ctx.lineCap = 'butt';
+    ctx.lineJoin = "miter";
+    ctx.strokeStyle = '#c0392b';
+}
+
+document.getElementById("red").addEventListener("click", () => color("red"))
+document.getElementById("orange").addEventListener("click", () => color("orange"))
+document.getElementById("silica").addEventListener("click", () => color("yellow"))
+document.getElementById("green").addEventListener("click", () => color("green"))
+document.getElementById("water").addEventListener("click", () => color("blue"))
+document.getElementById("purple").addEventListener("click", () => color("purple"))
+document.getElementById("wall").addEventListener("click", () => color("black"))
+document.getElementById("void").addEventListener("click", () => color("white"))
+document.getElementById("garbage").addEventListener("click", () => erase())
+document.getElementById("download").addEventListener("click", () => download())
+document.getElementById("round").addEventListener("click", () => setRound())
+document.getElementById("square").addEventListener("click", () => setSquare())
+
+
+
+
 
 initialize();
