@@ -8,7 +8,7 @@ var canvas, ctx, flag = false,
     dot_flag = false;
 
 var x = "black",
-    y = 2;
+    y = 6;
 
 function initialize() {
     canvas = document.getElementById('myCanvas');
@@ -97,17 +97,19 @@ function download() {
 }
 
 function setRound() {
-    ctx.lineWidth = 5;
     ctx.lineCap = 'round';
     ctx.lineJoin = "round";
     ctx.strokeStyle = '#2b39c0';
 }
 
 function setSquare() {
-    ctx.lineWidth = 5;
     ctx.lineCap = 'butt';
     ctx.lineJoin = "miter";
     ctx.strokeStyle = '#c0392b';
+}
+
+function setLineWidth(e) {
+    y = parseInt(e.currentTarget.value);
 }
 
 document.getElementById("red").addEventListener("click", () => color("red"))
@@ -122,6 +124,7 @@ document.getElementById("garbage").addEventListener("click", () => erase())
 document.getElementById("download").addEventListener("click", () => download())
 document.getElementById("round").addEventListener("click", () => setRound())
 document.getElementById("square").addEventListener("click", () => setSquare())
+document.getElementById("font-dropdown").addEventListener("change", (e) => setLineWidth(e))
 
 
 

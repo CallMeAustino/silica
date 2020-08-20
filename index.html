@@ -4,19 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AW Paint</title>
-    <!-- <script src="./src/styles/"></script> -->
+    <link rel="stylesheet" href="./dist/main.css"/>
 </head>
 <body>
     <h1 style="text-align: center;">Paint!</h1>
     <div style="display: flex; justify-content: center;">
-        <canvas id="myCanvas" style="cursor: crosshair; border: 3px solid black; margin-bottom: 5px"></canvas>
+        <canvas id="myCanvas"></canvas>
         <div style="margin-left: 10px; display: flex; flex-direction: column;";>
             <button style="margin: 5px 0;" id="round">
                 Round
             </button>
-            <button style="" id="square">
+            <button style="margin-bottom: 5px;" id="square">
                 Square
             </button>
+                <select id="font-dropdown" class="dropdown-content">
+                    <option value=1>1</option>
+                    <option value=4>4</option>
+                    <option value=8>8</option>
+                    <option value=12>12</option>
+                    <option value=16>16</option>
+                    <option value=24>24</option>
+                    <option value=32>32</option>
+                    <option value=64>64</option>
+                </select>
+            </div>
         </div>
     </div>
     <div style="text-align: center;">
@@ -38,7 +49,7 @@
         </button>
         <button id="garbage" style="border: none; background-color: white; height: 20px;">DEL
         </button>
-        <a id="download" download="image.png"><button id="download" download="image.png" type="button" onClick="download()">Download</button></a>
+        <a id="download" download="image.png"><button id="download-btn" download="image.png" type="button">Download</button></a>
     </div>
 <script src="dist/main.js"></script>
 </body>
