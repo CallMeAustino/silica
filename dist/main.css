@@ -1,7 +1,42 @@
-#myCanvas {
-    border: 3px solid black;
-    cursor: crosshair; 
-    margin-bottom: 5px;
-}
+   body {
+            margin: 0;
+            background-color: #222;
+        }
+        canvas {
+            display: block;
+            width: 512px;
+            height: 512px;
+            margin: 16px auto;
+        }
 
+        #elementButtons {
+            display: block;
+            width: 528px;
+            margin: 0 auto;
+        }
+
+        .elementButton {
+            cursor: pointer;
+            font-family: Sans-Serif;
+            display: inline-block;
+            margin: 8px;
+            width: 72px;
+            color: #fff;
+            outline-color: #ccc;
+            outline-style: solid;
+            outline-width: 2px;
+            text-align: center;
+        }
+
+        .elementButton:hover {
+            outline-color: #aaa;
+        }
+
+        .elementButtonSelected {
+            outline-color: #fff;
+        }
+
+        .elementButtonSelected:hover {
+            outline-color: #fff;
+        }
 /*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vLi9zcmMvc3R5bGVzL2luZGV4LnNjc3MiLCJ3ZWJwYWNrOi8vL2luZGV4LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSTtBQ0NKLEMiLCJmaWxlIjoibWFpbi5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY2FudmFzIHtcbiAgICBib3JkZXI6IDRweCBzb2xpZCBibGFjaztcbn0iLCIuY2FudmFzIHtcbiAgYm9yZGVyOiA0cHggc29saWQgYmxhY2s7XG59Il0sInNvdXJjZVJvb3QiOiIifQ==*/
