@@ -328,10 +328,9 @@ function start() {
         depth: false,
         stencil: false,
     });
-    twgl.setDefaults({
-        textureColor: [0, 0, 0, 1],
-        attribPrefix: "a_",
-    });
+    
+    twgl.setDefaults({ textureColor: [1, 0, 0, 1] });
+    twgl.setDefaults({ attribPrefix: 'a_' });
 
     gl.enable(gl.CULL_FACE); //removes non visible triangles before rasterization
     gl.clearColor(0, 0, 0, 1);
@@ -362,12 +361,6 @@ function start() {
 
     let frame = 1;
 
-    canvas.addEventListener("contextmenu", function (event) {
-        if (event.preventDefault) event.preventDefault();
-        if (event.stopPropagation) event.stopPropagation();
-        return false;
-    });
-
     let drawing = false;
     let selectedElement = elements.wall;
 
@@ -379,8 +372,8 @@ function start() {
         if (x >= 0 && y >= 0 && x < 1 && y < 1) {
             const i = Math.floor(x * bufferWidth);
             const j = Math.floor(y * bufferHeight);
-            for (let brushX = -2; brushX < 2; brushX++) {
-                for (let brushY = -2; brushY < 2; brushY++) {
+            for (let brushX = -1; brushX < 1; brushX++) {
+                for (let brushY = -1; brushY < 1; brushY++) {
                     const drawX = i + brushX;
                     const drawY = j + brushY;
                     if (drawX >= 0 && drawY >= 0 && drawX < bufferWidth && drawY < bufferHeight) {
