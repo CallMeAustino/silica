@@ -35,6 +35,7 @@ function componentToHex(c) {
     return hex.length == 1 ? "0" + hex : hex;
 }
 
+
 function rgbToHex(r, g, b) {
     return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
@@ -445,5 +446,6 @@ function start() {
 
     requestAnimationFrame(update);
 }
+
 
 window.onload = start;
