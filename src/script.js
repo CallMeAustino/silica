@@ -1,24 +1,24 @@
 const elements = {
-    void: {
+    eraser: {
+        hex: "#000000",
         red: 0, green: 0, blue: 0,
         density: 0, gravity: 0, slip: 0, slide: 0, scatter: 0,
-        reactions: [],
     },
     wall: {
-        red: 0.5, green: 0.5, blue: 0.5,
+        hex: "c0c0c0",
+        red: 192, green: 192, blue: 192,
         density: 1, gravity: 0, slip: 0, slide: 0, scatter: 0,
         immobile: true,
-        reactions: [],
     },
     sand: {
-        red: 1.0, green: 0.8, blue: 0.2,
+        hex: "#c2b280",
+        red: 194, green: 178, blue: 128,
         density: 0.7, gravity: 0.8, slip: 0, slide: 0.8, scatter: 0,
-        reactions: [],
     },
     water: {
-        red: 0, green: 0.4, blue: 1,
-        density: 0.5, gravity: 0.8, slip: 0.95, slide: 0, scatter: 0.35,
-        reactions: [],
+        hex: "#6BCAE2",
+        red: 107, green: 202, blue: 226,
+        density: 0.5, gravity: 0.8, slip: 0.95, slide: 0, scatter: 0.45,
     },
     
 };
@@ -28,34 +28,15 @@ for (const elementName in elements) {
     elements[elementName].id = elementId++;
 }
 
-const defaultElement = elements.void;
+const defaultElement = elements.eraser;
 
-function shuffleArray(array) {
-    const newArray = [];
-    let i = 0;
-    for (const element of array) {
-        let j = Math.floor(Math.random() * i);
-        if (i === j) {
-            newArray.push(element);
-        } else {
-            newArray.push(newArray[j]);
-            newArray[j] = element;
-        }
-        i++;
-    }
-    return newArray;
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
 }
 
-function rgb2hex(red, green, blue) {
-    return "#" + (
-        ("0" + Math.floor(red * 255).toString(16)).slice(-2) +
-        ("0" + Math.floor(green * 255).toString(16)).slice(-2) +
-        ("0" + Math.floor(blue * 255).toString(16)).slice(-2)
-    );
-}
-
-function nextPow2(n) {
-    return Math.pow(2, Math.ceil(Math.log2(n)));
+function rgbToHex(r, g, b) {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
 function newBuffer(width, height, fill) {
@@ -74,16 +55,14 @@ function newTexture(gl, pixels) {
         width: pixels.width,
         height: pixels.height,
         minMag: gl.NEAREST,
-        internalFormat: gl.RGB,
         format: gl.RGB,
-        wrap: gl.CLAMP_TO_EDGE,
         src: pixels,
     });
 }
 
 function newPixelData(buffer) {
-    const textureWidth = nextPow2(buffer.width);
-    const textureHeight = nextPow2(buffer.height);
+    const textureWidth = (buffer.width);
+    const textureHeight = (buffer.height);
     const pixels = new Uint8Array(textureWidth * textureHeight * 3);
     pixels.width = textureWidth;
     pixels.height = textureHeight;
@@ -93,12 +72,9 @@ function newPixelData(buffer) {
 function blitPixelData(pixels, buffer) {
     let j = 0;
     for (let i = 0; i < buffer.length; i++) {
-        pixels[j++] = Math.floor(buffer[i].red * 255);
-        pixels[j++] = Math.floor(buffer[i].green * 255);
-        pixels[j++] = Math.floor(buffer[i].blue * 255);
-        if (i % buffer.width === buffer.width - 1) {
-            j += (pixels.width - buffer.width) * 3;
-        }
+        pixels[j++] = Math.floor(buffer[i].red - 255);
+        pixels[j++] = Math.floor(buffer[i].green - 255);
+        pixels[j++] = Math.floor(buffer[i].blue - 255);
     }
     return pixels;
 }
@@ -128,31 +104,6 @@ function updateBuffers(timestamp, timeBuffer, readBuffer, writeBuffer) {
         +readBuffer.width - 1,
         +readBuffer.width,
     ];
-    allNeighbors.randomOrder = [
-        shuffleArray(allNeighbors),
-        shuffleArray(allNeighbors),
-        shuffleArray(allNeighbors),
-        shuffleArray(allNeighbors),
-        shuffleArray(allNeighbors),
-        shuffleArray(allNeighbors),
-    ];
-    westEdgeNeighbors.randomOrder = [
-        shuffleArray(westEdgeNeighbors),
-        shuffleArray(westEdgeNeighbors),
-        shuffleArray(westEdgeNeighbors),
-        shuffleArray(westEdgeNeighbors),
-        shuffleArray(westEdgeNeighbors),
-        shuffleArray(westEdgeNeighbors),
-    ];
-    eastEdgeNeighbors.randomOrder = [
-        shuffleArray(eastEdgeNeighbors),
-        shuffleArray(eastEdgeNeighbors),
-        shuffleArray(eastEdgeNeighbors),
-        shuffleArray(eastEdgeNeighbors),
-        shuffleArray(eastEdgeNeighbors),
-        shuffleArray(eastEdgeNeighbors),
-    ];
-    let neighborOrderIndex = 0;
     const mode = timestamp % 2;
     const increment = mode ? -1 : +1;
     const totalCells = readBuffer.width * readBuffer.height;
@@ -161,9 +112,6 @@ function updateBuffers(timestamp, timeBuffer, readBuffer, writeBuffer) {
     let east = i + 1;
     let north = i - readBuffer.width;
     let south = i + readBuffer.width;
-    // for(let j = 0; j < readBuffer.length; j++){
-    //     writeBuffer[j] = readBuffer[j];
-    // }
     while (i >= 0 && i < totalCells) {
         let random = Math.random();
         if (timeBuffer[i] === timestamp) {
@@ -294,7 +242,6 @@ function updateBuffers(timestamp, timeBuffer, readBuffer, writeBuffer) {
                     }
                 }
             } else {
-                // TODO
             }
             let swapTarget;
             if (westOpen && eastOpen) {
@@ -371,8 +318,8 @@ const fragmentShader = `
     }
 `;
 
-function begin() {
-    const canvas = document.getElementById("glCanvas");
+function start() {
+    const canvas = document.getElementById("myCanvas");
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
     const gl = twgl.getWebGLContext(canvas, {
@@ -386,7 +333,7 @@ function begin() {
         attribPrefix: "a_",
     });
 
-    gl.enable(gl.CULL_FACE);
+    gl.enable(gl.CULL_FACE); //removes non visible triangles before rasterization
     gl.clearColor(0, 0, 0, 1);
 
     const bufferWidth = 128;
@@ -466,7 +413,7 @@ function begin() {
             elementButtons.push(button);
             const label = document.createTextNode(elementName);
             button.appendChild(label);
-            const hex = rgb2hex(element.red * 0.5, element.green * 0.5, element.blue * 0.5);
+            const hex = rgbToHex(element.red, element.green, element.blue);
             button.classList.add("elementButton");
             button.style = `background-color: ${hex};`;
             document.getElementById("elementButtons").appendChild(button);
@@ -506,4 +453,4 @@ function begin() {
     requestAnimationFrame(update);
 }
 
-window.onload = begin;
+window.onload = start;

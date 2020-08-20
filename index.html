@@ -6,7 +6,9 @@
     <style>
         body {
             margin: 0;
-            background-color: #222;
+            background-image: linear-gradient(to bottom, #6BCAE2, #6BCAE2, #c2b280);
+            background-attachment:fixed;
+            background-repeat: no-repeat;
         }
 
         canvas {
@@ -14,12 +16,15 @@
             width: 512px;
             height: 512px;
             margin: 16px auto;
+            border: 3px solid white;
         }
 
         #elementButtons {
             display: block;
             width: 528px;
             margin: 0 auto;
+            text-align: center;
+            
         }
 
         .elementButton {
@@ -50,14 +55,16 @@
 </head>
 
 <body>
+    <div style="text-align: center;">
+        <h1 style="color: white; margin-top: 10px;">Silica</h1>
+    </div>
     <!-- Webglyphs dependencies -->
-    <script type="text/javascript" src="./twgl-full.min.js"></script>
+    <script type="text/javascript" src="twgl-3.2.2-full.min.js"></script>
 
     <script type="text/javascript" src="./src/script.js"></script>
 
     <!-- Webglyphs will render to this HTML5 canvas element. -->
-    <canvas id="glCanvas"></canvas>
-
+    <canvas id="myCanvas"></canvas>
     <div id="elementButtons"></div>
 </body>
 
