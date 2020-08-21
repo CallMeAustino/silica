@@ -18,7 +18,7 @@ const elements = {
     water: {
         hex: "#6BCAE2",
         red: 107, green: 202, blue: 226,
-        density: 0.5, gravity: 0.8, slip: 0.95, slide: 0, scatter: 0.45,
+        density: 0.5, gravity: 0.8, slip: 0.95, slide: 0, scatter: 0.35,
     },
     
 };
@@ -105,8 +105,8 @@ function updateBuffers(timestamp, timeBuffer, readBuffer, writeBuffer) {
         +readBuffer.width - 1,
         +readBuffer.width,
     ];
-    const mode = timestamp % 2;
-    const increment = mode ? -1 : +1;
+    const mode = timestamp % 2; //modifies how often buffers are redrawn
+    const increment = mode ? -1 : 1;
     const totalCells = readBuffer.width * readBuffer.height;
     let i = mode * (totalCells - 1);
     let west = i - 1;
