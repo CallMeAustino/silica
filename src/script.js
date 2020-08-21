@@ -78,7 +78,7 @@ function blitPixelData(pixels, buffer) {
         pixels[j++] = Math.floor(buffer[i].blue - 255);
     }
     return pixels;
-}
+} //duplication
 
 function updateBuffers(timestamp, timeBuffer, readBuffer, writeBuffer) {
     const allNeighbors = [
