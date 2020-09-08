@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <script src="https://kit.fontawesome.com/45f6ccc5fe.js" crossorigin="anonymous"></script>
     <title>Silica</title>
     <style>
         body {
@@ -65,8 +66,18 @@
     <script type="text/javascript" src="./src/script.js"></script>
 
     <!-- Webglyphs will render to this HTML5 canvas element. -->
-    <canvas id="myCanvas"></canvas>
-    <div id="elementButtons"></div>
+    <div style="display: flex; margin: 0 30px;">
+        <p style="max-width: 27%; margin-right: 50px;">Silica is a physics simulator created using vanilla javascript, WebGL and twgl. Use your mouse to drop different types of particles onto the empty canvas and have fun! For more information on simulators and achieving stable state, read about <a href="https://bitstorm.org/gameoflife/">John Conway's Game of Life.</a></p>
+        <div>
+            <canvas id="myCanvas"></canvas>
+            <div id="elementButtons"></div>
+        </div>
+        <div style="display: flex; flex-direction: column; margin-left: 20px; margin-top: 20px;">
+            <a target="_blank" href="https://github.com/callmeaustino"><i style="margin-bottom: 15px; cursor: pointer; color: black;"class="fab fa-github"></i></a>
+            <a target="_blank" href="https://www.linkedin.com/in/austinhokunwong/"><i style="margin-bottom: 15px; cursor: pointer; color: black;"class="fab fa-linkedin"></i></a>
+            <a target="_blank" href="angel.co/u/austin-wong-5"><i style="margin-bottom: 15px; cursor: pointer; color: black;"class="fab fa-angellist"></i></a>
+        </div>
+    </div>
 </body>
 
 </html>
