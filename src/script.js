@@ -3,25 +3,45 @@ const elements = {
         hex: "#000000",
         red: 0, green: 0, blue: 0,
         density: 0, gravity: 0, slip: 0, slide: 0, scatter: 0,
+        selfReactions: [],
+        reactions: [],
     },
     wall: {
         hex: "c0c0c0",
         red: 192, green: 192, blue: 192,
         density: 1, gravity: 0, slip: 0, slide: 0, scatter: 0,
         immobile: true,
+        selfReactions: [],
+        reactions: [],
     },
     sand: {
         hex: "#c2b280",
         red: 194, green: 178, blue: 128,
         density: 0.7, gravity: 0.8, slip: 0, slide: 0.8, scatter: 0,
+        selfReactions: [],
+        reactions: [],
     },
     water: {
         hex: "#6BCAE2",
         red: 107, green: 202, blue: 226,
         density: 0.5, gravity: 0.8, slip: 0.95, slide: 0, scatter: 0.35,
+        selfReactions: [],
+        reactions: [],
     },
+    fire: {
+        hex: "#ff0000",
+        red: 200, green: 0, blue: 0,
+        density: -0.5, gravity: -0.4, slip: 0, slide: 0, scatter: 0.8,
+        reactions: [],
+        selfReactions: [],
+    }
     
 };
+
+elements.fire.selfReactions.push({
+    chance: 0.2,
+    becomes: elements.eraser,
+})
 
 let elementId = 0;
 for (const elementName in elements) {
@@ -289,6 +309,146 @@ function updateBuffers(timestamp, timeBuffer, readBuffer, writeBuffer) {
         }
         if (timeBuffer[i] < timestamp) {
             writeBuffer[i] = readBuffer[i];
+            if (cell.reactions.length) {
+                const neighbors = [];
+                if (north >= 0) neighbors[readBuffer[north].id] = (
+                    (neighbors[readBuffer[north].id] || 0) + 1
+                );
+                if (south < totalCells) neighbors[readBuffer[south].id] = (
+                    (neighbors[readBuffer[south].id] || 0) + 1
+                );
+                if (!westEdge) {
+                    if (northwest >= 0) neighbors[readBuffer[northwest].id] = (
+                        (neighbors[readBuffer[northwest].id] || 0) + 1
+                    );
+                    if (west >= 0) neighbors[readBuffer[west].id] = (
+                        (neighbors[readBuffer[west].id] || 0) + 1
+                    );
+                    if (southwest < totalCells) neighbors[readBuffer[southwest].id] = (
+                        (neighbors[readBuffer[southwest].id] || 0) + 1
+                    );
+                }
+                if (!eastEdge) {
+                    if (northeast >= 0) neighbors[readBuffer[northeast].id] = (
+                        (neighbors[readBuffer[northeast].id] || 0) + 1
+                    );
+                    if (southeast < totalCells) neighbors[readBuffer[southeast].id] = (
+                        (neighbors[readBuffer[southeast].id] || 0) + 1
+                    );
+                    if (east < totalCells) neighbors[readBuffer[east].id] = (
+                        (neighbors[readBuffer[east].id] || 0) + 1
+                    );
+                }
+                for (const reaction of cell.reactions) {
+                    if (reaction.singleNeighbor && reaction.chance > random) {
+                        const actual = neighbors[reaction.singleNeighbor.element.id];
+                        if (
+                            actual >= reaction.singleNeighbor.minimum &&
+                            actual <= reaction.singleNeighbor.maximum
+                        ) {
+                            writeBuffer[i] = reaction.becomes;
+                            timeBuffer[i] = timestamp;
+                            if (reaction.explosive) {
+                                let expWest = west;
+                                let expEast = east;
+                                let expNorth = north;
+                                let expSouth = south;
+                                for (let exp = 0; exp <= reaction.explosive; exp++) {
+                                    if (expWest >= 0 && !westEdge) {
+                                        writeBuffer[expWest] = reaction.becomes;
+                                        timeBuffer[expWest] = timestamp;
+                                        if (expWest % readBuffer.width === 0) break;
+                                        expWest--;
+                                    }
+                                    if (expEast < totalCells && !eastEdge) {
+                                        writeBuffer[expEast] = reaction.becomes;
+                                        timeBuffer[expEast] = timestamp;
+                                        if (expEast % readBuffer.width === readBuffer.width - 1) break;
+                                        expEast++;
+                                    }
+                                    if (expNorth >= 0) {
+                                        writeBuffer[expNorth] = reaction.becomes;
+                                        timeBuffer[expNorth] = timestamp;
+                                        expNorth -= readBuffer.width;
+                                    }
+                                    if (expSouth < totalCells) {
+                                        writeBuffer[expSouth] = reaction.becomes;
+                                        timeBuffer[expSouth] = timestamp;
+                                        expSouth += readBuffer.height;
+                                    }
+                                }
+                            } else {
+                                const whichNeighbors = (westEdge ?
+                                    westEdgeNeighbors : (eastEdge ? eastEdgeNeighbors : allNeighbors)
+                                );
+                                const neighborIndexes = whichNeighbors.randomOrder[neighborOrderIndex++];
+                                if (neighborOrderIndex >= whichNeighbors.randomOrder.length) {
+                                    neighborOrderIndex = 0;
+                                }
+                                let changed = 0;
+                                for (let j = 0; j < 8 && changed < reaction.singleNeighbor.affects; j++) {
+                                    const index = i + neighborIndexes[j];
+                                    if (
+                                        index >= 0 && index < readBuffer.length &&
+                                        readBuffer[index] === reaction.singleNeighbor.element
+                                    ) {
+                                        writeBuffer[index] = reaction.singleNeighbor.becomes;
+                                        timeBuffer[index] = timestamp;
+                                        changed++;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    } else if (reaction.multiNeighbor && reaction.chance > random) {
+                        let match = true;
+                        for (const thisNeighbor of reaction.multiNeighbor) {
+                            const actual = neighbors[thisNeighbor.element.id];
+                            if (
+                                actual < thisNeighbor.minimum ||
+                                actual > thisNeighbor.maximum
+                            ) {
+                                match = false;
+                                break;
+                            }
+                        }
+                        if (match) for (const thisNeighbor of reaction.multiNeighbor) {
+                            writeBuffer[i] = reaction.becomes;
+                            timeBuffer[i] = timestamp;
+                            const whichNeighbors = (westEdge ?
+                                westEdgeNeighbors : (eastEdge ? eastEdgeNeighbors : allNeighbors)
+                            );
+                            const neighborIndexes = whichNeighbors.randomOrder[neighborOrderIndex++];
+                            if (neighborOrderIndex >= whichNeighbors.randomOrder.length) {
+                                neighborOrderIndex = 0;
+                            }
+                            let changed = 0;
+                            for (let j = 0; j < 8 && changed < thisNeighbor.affects; j++) {
+                                const index = i + neighborIndexes[j];
+                                if (
+                                    index >= 0 && index < readBuffer.length &&
+                                    readBuffer[index] === thisNeighbor.element
+                                ) {
+                                    writeBuffer[index] = thisNeighbor.becomes;
+                                    timeBuffer[index] = timestamp;
+                                    changed++;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    random = Math.random()
+                }
+            }
+            if (cell.selfReactions.length && timeBuffer[i] < timestamp) {
+                for (const reaction of cell.selfReactions) {
+                    if (reaction.chance > random) {
+                        writeBuffer[i] = reaction.becomes;
+                        timeBuffer[i] = timestamp;
+                    }
+                    random = Math.random();
+                }
+            }
         }
         i += increment;
         north += increment;
